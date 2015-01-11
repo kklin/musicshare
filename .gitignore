@@ -55,3 +55,6 @@ target/
 
 # API keys
 secret.py
+
+# virtualenv
+venv/
