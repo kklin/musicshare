@@ -20,7 +20,7 @@ class VoteTracker(object):
     def __repr__(self):
         ret = ""
         for verdict in self.votes.keys():
-            ret += Vote.verdict_to_string(verdict) + " : " + str(len(self.votes[verdict]))
+            ret += Vote.verdict_to_string(verdict) + " : " + str(len(self.votes[verdict])) + "\n"
         return ret
 
 class Vote(object):
