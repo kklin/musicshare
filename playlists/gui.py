@@ -100,7 +100,7 @@ class ListBox(wx.Frame):
                             self.process(sock, data)
                         else:
                             # socket is broken
-                            if sock in socket_list:
+                            if sock in self.socket_list:
                                 print(str(socket_to_user[sock]) + " disconnected ")
                                 self.socket_list.remove(sock)
                                 self.socket_to_user.pop(sock, None)
@@ -170,7 +170,9 @@ class ListBox(wx.Frame):
         for song_request in self.potential_songs.ordered:
             song_obj = song_request.song
             song_name = song_obj.artist_name + " - " + song_obj.title
-            self.listbox.Append(song_name)
+            vote_tracker = song_request.vote_tracker
+            vote_breakdown = "Yes: {0}, No: {1}, Abstain: {2}".format(vote_tracker.number_yes, vote_tracker.number_no, vote_tracker.number_abstain)
+            self.listbox.Append(song_name + " | " + vote_breakdown)
 
     def NewItem(self, event):
         text = wx.GetTextFromUser('Enter a new item', 'Insert dialog')
