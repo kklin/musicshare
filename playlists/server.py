@@ -1,13 +1,16 @@
 import sys
 import socket, select
-import settings
-from network import Header, Register
+import settings, network, models
+from network import NetworkPacket, VoteRequest
 
+# TODO: are global variables like this the right choice?
 RECV_BUFFER = 4096
 host = socket.gethostname()
 port = settings.port
 socket_list = []
 socket_to_user = {}
+
+potential_songs = models.SongList.from_top_songs()
 
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -49,18 +52,26 @@ def main():
     server_socket.close()
 
 def process(sock, data):
-    header = data[0]
-    if header is Header.VOTE:
+    parsed_request = NetworkPacket.parse(data)
+    request_type = type(parsed_request)
+    if request_type is network.VoteResponse:
         pass
-    elif header is Header.CONTROL:
+    elif request_type is network.Control:
         pass
-    elif header is Header.REQUEST_INFO:
+    elif request_type is network.RequestInfo:
         pass
-    elif header is Header.ADD_SONG:
+    elif request_type is network.AddSong:
         pass
-    elif header is Header.REGISTER:
-        socket_to_user[sock] = Register.from_network_packet(data)
+    elif request_type is network.Register:
+        socket_to_user[sock] = parsed_request.id
         print(str(sock) + " is now associated with id " + str(socket_to_user[sock]))
+        print("Requesting votes on the playlist now")
+        request_votes(sock, potential_songs)
+
+def request_votes(sock, potential_songs):
+    for potential_song in potential_songs.song_list:
+        vote_request = VoteRequest(potential_song.song.id)
+        sock.send(vote_request.to_network_packet())
 
 if __name__ == "__main__":
     sys.exit(main())
