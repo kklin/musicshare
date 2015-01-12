@@ -36,9 +36,11 @@ class SongList(object):
 
     def __init__(self):
         self.song_list = []
+        self.song_dict = {}
 
     def add_song_request(self, song_request):
         self.song_list.append(song_request)
+        self.song_dict[song_request.song.id] = song_request
 
     def remove_song(self, song_id):
         # TODO
@@ -48,13 +50,16 @@ class SongList(object):
         """Registers the vote for the given song if it is in the song list.
         Returns True if the vote was updated, and False otherwise
         """
-        # TODO: could turn song_list into dict for faster lookup
 
-        for song_request in song_list:
-            if song_request.song.id is song_id:
-                song_request.vote_tracker.register_vote(vote)
-                return True
-        return False
+        try:
+            self.song_dict[song_id].vote_tracker.register_vote(vote)
+            return True
+        except:
+            return False
+
+    def get_song(self, song_id):
+        # TODO: do more error checking here
+        return self.song_dict[song_id]
 
     def get_ordered(self):
         pass

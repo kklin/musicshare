@@ -2,6 +2,7 @@ import sys
 import socket, select
 import settings, network, models
 from network import NetworkPacket, VoteRequest
+from vote import Vote
 
 # TODO: are global variables like this the right choice?
 RECV_BUFFER = 4096
@@ -74,10 +75,13 @@ def process(sock, data):
             else:
                 # uh oh, throw an exception or sumtin'
                 pass
+            voter = socket_to_user[sock]
 
-            success = song_list.set_vote(parsed_request.song_id, verdict)
+            success = potential_songs.set_vote(parsed_request.song_id, Vote(voter, verdict))
             if success:
                 print("Successfully saved vote")
+                print("The votes for " + parsed_request.song_id + " now looks like this: ")
+                print(potential_songs.get_song(parsed_request.song_id).vote_tracker)
             else:
                 print("Hmm.. couldn't save the vote. Maybe the id isn't in the list")
         elif request_type is network.Control:

@@ -2,7 +2,7 @@ import sys
 import socket, select
 import settings
 import network
-from network import Register, NetworkPacket
+from network import Register, NetworkPacket, VoteResponse
 
 RECV_BUFFER = 4096
 
@@ -31,7 +31,7 @@ def main(host):
             try:
                 data = sock.recv(RECV_BUFFER)
                 if data:
-                    process(data)
+                    process(sock, data)
                 else:
                     # socket is broken
                     print("Lost connection to server")
@@ -44,7 +44,7 @@ def main(host):
 
     s.close()
 
-def process(data):
+def process(sock, data):
     packets = data.split(NetworkPacket.DELIMITER)
     try:
         packets.remove('') # not sure why there's that blank string, but we gotta get rid of it
@@ -55,6 +55,9 @@ def process(data):
         request_type = type(parsed_request)
         if request_type is network.VoteRequest:
             print("Got a vote request from the server for: " + parsed_request.song_id)
+            verdict = raw_input("Do you like it? (Y/N/A) ")
+            response = VoteResponse(parsed_request.song_id, verdict)
+            response.send(sock)
         else:
             print("Err not sure what that was..")
 

@@ -40,7 +40,7 @@ class NetworkPacket(object):
     @staticmethod
     def parse(data):
         if VoteResponse.is_packet(data):
-            pass
+            return VoteResponse.from_network_packet(data)
         elif VoteRequest.is_packet(data):
             return VoteRequest.from_network_packet(data)
         elif Control.is_packet(data):
@@ -83,14 +83,14 @@ class VoteResponse(NetworkPacket):
 
     @staticmethod
     def from_network_packet(data):
-        return Register(data[2:], data[1])
+        return VoteResponse(data[2:], data[1])
 
     @staticmethod
     def is_packet(data):
         return data[:Header.HEADER_LENGTH] is Header.VOTE_RESPONSE
 
     def __str__(self):
-        return self.id
+        return self.song_id + " : " + self.verdict
 
 class VoteRequest(NetworkPacket):
 

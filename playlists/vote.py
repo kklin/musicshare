@@ -19,8 +19,8 @@ class VoteTracker(object):
 
     def __repr__(self):
         ret = ""
-        for vote in self.votes.keys():
-            ret += str(vote) + " : " + len(self.votes[vote])
+        for verdict in self.votes.keys():
+            ret += Vote.verdict_to_string(verdict) + " : " + str(len(self.votes[verdict]))
         return ret
 
 class Vote(object):
@@ -31,3 +31,14 @@ class Vote(object):
     def __init__(self, voter, vote):
         self.voter = voter
         self.vote = vote
+
+    @staticmethod
+    def verdict_to_string(verdict):
+        if verdict is Vote.YES:
+            return "Yes"
+        elif verdict is Vote.NO:
+            return "No"
+        elif verdict is Vote.ABSTAIN:
+            return "Abstain"
+        else:
+            return "UNKNOWN"
