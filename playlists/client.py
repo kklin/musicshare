@@ -19,8 +19,6 @@ def main(host):
         print("Unable to connect")
         sys.exit()
 
-    print("Connected! Going to try registering")
-
     username = raw_input("Hi! Pick a username: ")
     register_obj = Register(username)
     register_packet_data = register_obj.to_network_packet()
