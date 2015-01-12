@@ -19,7 +19,8 @@ def main(host):
 
     print("Connected! Going to try registering")
 
-    register_obj = Register("kklin")
+    username = raw_input("Hi! Pick a username: ")
+    register_obj = Register(username)
     register_packet_data = register_obj.to_network_packet()
     s.send(register_packet_data)
 
