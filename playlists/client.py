@@ -1,8 +1,10 @@
 import sys
 import socket, select
-import settings
-import network
+import network, secret, settings
 from network import Register, NetworkPacket, VoteResponse
+
+from pyechonest import song, config
+config.ECHO_NEST_API_KEY = secret.echo_nest_api_key
 
 RECV_BUFFER = 4096
 
@@ -55,7 +57,9 @@ def process(sock, data):
         parsed_request = NetworkPacket.parse(packet)
         request_type = type(parsed_request)
         if request_type is network.VoteRequest:
-            print("Got a vote request from the server for: " + parsed_request.song_id)
+            song_obj = song.Song(parsed_request.song_id)
+            song_name = song_obj.artist_name + " - " + song_obj.title
+            print("Got a vote request from the server for: " + song_name)
             verdict = raw_input("Do you like it? (Y/N/A) ")
             response = VoteResponse(parsed_request.song_id, verdict)
             response.send(sock)

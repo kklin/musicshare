@@ -1,8 +1,11 @@
 import sys
 import socket, select
-import settings, network, models
+import settings, network, models, secret
 from network import NetworkPacket, VoteRequest
 from vote import Vote
+
+from pyechonest import song, config
+config.ECHO_NEST_API_KEY = secret.echo_nest_api_key
 
 # TODO: are global variables like this the right choice?
 RECV_BUFFER = 4096
@@ -33,7 +36,7 @@ def main():
             if sock == server_socket:
                 sockfd, addr = server_socket.accept()
                 socket_list.append(sockfd)
-                print("Client (%s, %s) connected" % addr)
+                #print("Client (%s, %s) connected" % addr)
             # a message from a client, not a new connection
             else:
                 try:
@@ -79,8 +82,10 @@ def process(sock, data):
 
             success = potential_songs.set_vote(parsed_request.song_id, Vote(voter, verdict))
             if success:
-                print("Successfully saved vote")
-                print("The votes for " + parsed_request.song_id + " now looks like this: ")
+                #print("Successfully saved vote")
+                song_obj = song.Song(parsed_request.song_id)
+                song_name = song_obj.artist_name + " - " + song_obj.title
+                print("The votes for " + song_name + " now looks like this: ")
                 print(potential_songs.get_song(parsed_request.song_id).vote_tracker)
             else:
                 print("Hmm.. couldn't save the vote. Maybe the id isn't in the list")
@@ -92,13 +97,14 @@ def process(sock, data):
             pass
         elif request_type is network.Register:
             socket_to_user[sock] = parsed_request.id
-            print(str(sock) + " is now associated with id " + str(socket_to_user[sock]))
-            print("Requesting votes on the playlist now")
+            #print(str(sock) + " is now associated with id " + str(socket_to_user[sock]))
+            #print("Requesting votes on the playlist now")
+            print(parsed_request.id + " is now registered!")
             request_votes(sock, potential_songs)
 
 def request_votes(sock, potential_songs):
     for potential_song in potential_songs.song_list:
-        print("Requesting vote for " + potential_song.song.id)
+        #print("Requesting vote for " + potential_song.song.id)
         vote_request = VoteRequest(potential_song.song.id)
         vote_request.send(sock)
 
