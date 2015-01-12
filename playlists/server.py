@@ -104,7 +104,7 @@ def process(sock, data):
 
 def request_votes(sock, potential_songs):
     for potential_song in potential_songs.song_list:
-        #print("Requesting vote for " + potential_song.song.id)
+        print("Requesting vote for " + potential_song.song.id)
         vote_request = VoteRequest(potential_song.song.id)
         vote_request.send(sock)
 

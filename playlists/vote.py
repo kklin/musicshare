@@ -11,6 +11,18 @@ class VoteTracker(object):
             return Vote.YES
         return Vote.NO
 
+    @property
+    def number_yes(self):
+        return len(self.votes[Vote.YES])
+
+    @property
+    def number_no(self):
+        return len(self.votes[Vote.NO])
+
+    @property
+    def number_abstain(self):
+        return len(self.votes[Vote.ABSTAIN])
+
     def register_vote(self, vote):
         self.votes[vote.vote].append(vote.voter)
 
