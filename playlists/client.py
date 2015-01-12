@@ -45,12 +45,18 @@ def main(host):
     s.close()
 
 def process(data):
-    parsed_request = NetworkPacket.parse(data)
-    request_type = type(parsed_request)
-    if request_type is network.VoteRequest:
-        print("Got a vote request from the server for: " + parsed_request.song_id)
-    else:
-        print("Err not sure what that was..")
+    packets = data.split(NetworkPacket.DELIMITER)
+    try:
+        packets.remove('') # not sure why there's that blank string, but we gotta get rid of it
+    except:
+        pass
+    for packet in packets:
+        parsed_request = NetworkPacket.parse(packet)
+        request_type = type(parsed_request)
+        if request_type is network.VoteRequest:
+            print("Got a vote request from the server for: " + parsed_request.song_id)
+        else:
+            print("Err not sure what that was..")
 
 if __name__ == "__main__":
     host = socket.gethostname()

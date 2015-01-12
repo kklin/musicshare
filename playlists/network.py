@@ -17,11 +17,17 @@ class Header(object):
 
 class NetworkPacket(object):
 
+    DELIMITER = '                     '
+
     def __init__(self):
         pass
 
     def to_network_packet(self):
         raise NotImplementedError()
+
+    # send this object as a network packet over the given socket
+    def send(self, sock):
+        sock.send(self.to_network_packet() + self.DELIMITER)
 
     @staticmethod
     def from_network_packet(data):
