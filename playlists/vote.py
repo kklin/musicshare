@@ -24,6 +24,7 @@ class VoteTracker(object):
         return ret
 
 class Vote(object):
+    # TODO: could do this better with some kind of enum
     YES = 1
     NO = -1
     ABSTAIN = 0

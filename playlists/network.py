@@ -27,7 +27,7 @@ class NetworkPacket(object):
 
     # send this object as a network packet over the given socket
     def send(self, sock):
-        sock.send(self.to_network_packet() + self.DELIMITER)
+        sock.send(self.to_network_packet() + NetworkPacket.DELIMITER)
 
     @staticmethod
     def from_network_packet(data):
