@@ -22,7 +22,7 @@ class Player(object):
         # Right now, to login you have to first login through the shell in
         # /spotify/shell.py
         self.session.on(
-            spotify.SessionEvent.CONNECTION_STATE_UPDATED, on_connection_state_updated)
+            spotify.SessionEvent.CONNECTION_STATE_UPDATED, self.on_connection_state_updated)
         self.session.relogin()
         self.logged_in.wait()
 
