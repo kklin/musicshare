@@ -13,3 +13,16 @@ Or, for a more passive approach, your phone could simple send your Spotify profi
 server, and the server could generate a playlist based on the Spotify profiles
 of the connected clients. With the rich data provided by Spotify and Echonest,
 this kind of stuff is possible.
+
+
+#### TODO
+Short term:
+- Add smarter playlist generation
+- Allow users to add songs suggestions to the playlist
+- Allow users to skip/pause songs
+- Create mobile version
+- Automatically connect clients when a server is available
+
+Long term:
+- Integrate Bitcoin to turn Musicshare into a jukebox
+- Integrate into Raspberry Pi
