@@ -20,9 +20,10 @@ Short term:
 - Add smarter playlist generation
 - Allow users to add songs suggestions to the playlist
 - Allow users to skip/pause songs
-- Create mobile version
+- Create GUI for client
 - Automatically connect clients when a server is available
 
 Long term:
+- Create mobile version
 - Integrate Bitcoin to turn Musicshare into a jukebox
 - Integrate into Raspberry Pi
