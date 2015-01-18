@@ -77,11 +77,6 @@ class SongList(object):
 
         return song_list
 
-    # TODO: move this somewhere more appropriate
-    @staticmethod
-    def to_spotify_track_id(song_obj):
-        return song_obj.get_tracks('spotify')[0]['foreign_id']
-
     @staticmethod
     def from_spotify_accounts(accounts):
         return SongList()

@@ -2,12 +2,6 @@ import threading
 
 import spotify
 
-logged_in = threading.Event()
-
-def on_connection_state_updated(session):
-    if session.connection.state is spotify.ConnectionState.LOGGED_IN:
-        logged_in.set()
-
 class Player(object):
     '''There should only be one instance of this class. It handles playing
     Spotify tracks'''
@@ -22,11 +16,19 @@ class Player(object):
         loop = spotify.EventLoop(self.session)
         loop.start()
 
+        self.logged_in = threading.Event()
+
         # Assuming a previous login with remember_me=True and a proper logout
+        # Right now, to login you have to first login through the shell in
+        # /spotify/shell.py
         self.session.on(
             spotify.SessionEvent.CONNECTION_STATE_UPDATED, on_connection_state_updated)
         self.session.relogin()
-        logged_in.wait()
+        self.logged_in.wait()
+
+    def on_connection_state_updated(self,session):
+        if session.connection.state is spotify.ConnectionState.LOGGED_IN:
+            self.logged_in.set()
 
     def play(self, track_uri):
         '''Plays the given track, regardless of whether or not there is a song

@@ -6,7 +6,7 @@ import wx, time, threading
 
 import sys
 import socket, select
-import settings, network, models, secret
+import settings, network, models, secret, util
 from network import NetworkPacket, VoteRequest
 from vote import Vote
 from spotify_player import Player
@@ -16,17 +16,13 @@ config.ECHO_NEST_API_KEY = secret.echo_nest_api_key
 
 ID_PLAY = 1
 
-class ListBox(wx.Frame):
+class ServerGUI(wx.Frame):
 
-    # TODO: are global variables like this the right choice?
-    socket_list = []
-    socket_to_user = {}
+    TITLE = "Musicshare Server"
+    RECV_BUFFER = 4096
 
-    potential_songs = models.SongList.from_top_songs()
-
-    def __init__(self, parent, id, title):
-        title = "Musicshare Server"
-        wx.Frame.__init__(self, parent, id, title, size=(350, 220))
+    def __init__(self, parent, id):
+        wx.Frame.__init__(self, parent, id, ServerGUI.TITLE, size=(350, 220))
 
         panel = wx.Panel(self, -1)
         hbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -37,9 +33,6 @@ class ListBox(wx.Frame):
         btnPanel = wx.Panel(panel, -1)
         vbox = wx.BoxSizer(wx.VERTICAL)
         play = wx.Button(btnPanel, ID_PLAY, 'Play', size=(90, 30))
-        # ren = wx.Button(btnPanel, ID_RENAME, 'Rename', size=(90, 30))
-        # dlt = wx.Button(btnPanel, ID_DELETE, 'Delete', size=(90, 30))
-        # clr = wx.Button(btnPanel, ID_CLEAR, 'Clear', size=(90, 30))
 
         self.Bind(wx.EVT_BUTTON, self.play, id=ID_PLAY)
 
@@ -59,7 +52,10 @@ class ListBox(wx.Frame):
 
     def main(self):
         self.player = Player()
-        RECV_BUFFER = 4096
+        self.socket_list = []
+        self.socket_to_user = {}
+        self.potential_songs = models.SongList.from_top_songs()
+
         host = socket.gethostname()
         port = settings.port
 
@@ -88,7 +84,7 @@ class ListBox(wx.Frame):
                 # a message from a client, not a new connection
                 else:
                     try:
-                        data = sock.recv(RECV_BUFFER)
+                        data = sock.recv(ServerGUI.RECV_BUFFER)
                         if data:
                             self.process(sock, data)
                         else:
@@ -169,9 +165,9 @@ class ListBox(wx.Frame):
 
     def play(self, event):
         to_play = self.potential_songs.ordered[0].song
-        track_id = models.SongList.to_spotify_track_id(to_play)
+        track_id = util.to_spotify_track_id(to_play)
         self.player.play(track_id)
 
 app = wx.App()
-ListBox(None, -1, 'ListBox')
+ServerGUI(None, -1)
 app.MainLoop()
