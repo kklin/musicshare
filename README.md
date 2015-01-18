@@ -1,5 +1,5 @@
 # musicshare
-DJ-ing, made democratic!
+#### DJ-ing, made democratic!
 
 This set of programs allows users to create a designated playback server, and
 connect multiple clients that together decide what songs should be played.
