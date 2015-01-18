@@ -58,3 +58,8 @@ secret.py
 
 # virtualenv
 venv/
+
+spotify_appkey.key
+
+# spotify tmp dir
+playlists/tmp

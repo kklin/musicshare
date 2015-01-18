@@ -69,13 +69,18 @@ class SongList(object):
     @staticmethod
     def from_top_songs():
         hot_artists = artist.top_hottt()
-        hottest_artist = hot_artists[0]
+        hottest_artist = hot_artists[0] 
         hot_playlist = playlist.basic(artist_id = hottest_artist.id)
         song_list = SongList()
         for song in hot_playlist:
             song_list.add_song_request(SongRequest(song, None))
 
         return song_list
+
+    # TODO: move this somewhere more appropriate
+    @staticmethod
+    def to_spotify_track_id(song_obj):
+        return song_obj.get_tracks('spotify')[0]['foreign_id']
 
     @staticmethod
     def from_spotify_accounts(accounts):

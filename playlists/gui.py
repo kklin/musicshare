@@ -9,14 +9,12 @@ import socket, select
 import settings, network, models, secret
 from network import NetworkPacket, VoteRequest
 from vote import Vote
+from spotify_player import Player
 
 from pyechonest import song, config
 config.ECHO_NEST_API_KEY = secret.echo_nest_api_key
 
-ID_NEW = 1
-ID_RENAME = 2
-ID_CLEAR = 3
-ID_DELETE = 4
+ID_PLAY = 1
 
 class ListBox(wx.Frame):
 
@@ -27,6 +25,7 @@ class ListBox(wx.Frame):
     potential_songs = models.SongList.from_top_songs()
 
     def __init__(self, parent, id, title):
+        title = "Musicshare Server"
         wx.Frame.__init__(self, parent, id, title, size=(350, 220))
 
         panel = wx.Panel(self, -1)
@@ -37,22 +36,15 @@ class ListBox(wx.Frame):
 
         btnPanel = wx.Panel(panel, -1)
         vbox = wx.BoxSizer(wx.VERTICAL)
-        new = wx.Button(btnPanel, ID_NEW, 'New', size=(90, 30))
-        ren = wx.Button(btnPanel, ID_RENAME, 'Rename', size=(90, 30))
-        dlt = wx.Button(btnPanel, ID_DELETE, 'Delete', size=(90, 30))
-        clr = wx.Button(btnPanel, ID_CLEAR, 'Clear', size=(90, 30))
+        play = wx.Button(btnPanel, ID_PLAY, 'Play', size=(90, 30))
+        # ren = wx.Button(btnPanel, ID_RENAME, 'Rename', size=(90, 30))
+        # dlt = wx.Button(btnPanel, ID_DELETE, 'Delete', size=(90, 30))
+        # clr = wx.Button(btnPanel, ID_CLEAR, 'Clear', size=(90, 30))
 
-        self.Bind(wx.EVT_BUTTON, self.NewItem, id=ID_NEW)
-        self.Bind(wx.EVT_BUTTON, self.OnRename, id=ID_RENAME)
-        self.Bind(wx.EVT_BUTTON, self.OnDelete, id=ID_DELETE)
-        self.Bind(wx.EVT_BUTTON, self.OnClear, id=ID_CLEAR)
-        self.Bind(wx.EVT_LISTBOX_DCLICK, self.OnRename)
+        self.Bind(wx.EVT_BUTTON, self.play, id=ID_PLAY)
 
         vbox.Add((-1, 20))
-        vbox.Add(new)
-        vbox.Add(ren, 0, wx.TOP, 5)
-        vbox.Add(dlt, 0, wx.TOP, 5)
-        vbox.Add(clr, 0, wx.TOP, 5)
+        vbox.Add(play)
 
         btnPanel.SetSizer(vbox)
         hbox.Add(btnPanel, 0.6, wx.EXPAND | wx.RIGHT, 20)
@@ -66,6 +58,7 @@ class ListBox(wx.Frame):
         thread.start()
 
     def main(self):
+        self.player = Player()
         RECV_BUFFER = 4096
         host = socket.gethostname()
         port = settings.port
@@ -174,29 +167,10 @@ class ListBox(wx.Frame):
             vote_breakdown = "Yes: {0}, No: {1}, Abstain: {2}".format(vote_tracker.number_yes, vote_tracker.number_no, vote_tracker.number_abstain)
             self.listbox.Append(song_name + " | " + vote_breakdown)
 
-    def NewItem(self, event):
-        text = wx.GetTextFromUser('Enter a new item', 'Insert dialog')
-        if text != '':
-            self.listbox.Append(text)
-
-    def OnRename(self, event):
-        sel = self.listbox.GetSelection()
-        text = self.listbox.GetString(sel)
-        renamed = wx.GetTextFromUser('Rename item', 'Rename dialog', text)
-        if renamed != '':
-            self.listbox.Delete(sel)
-            self.listbox.Insert(renamed, sel)
-
-
-    def OnDelete(self, event):
-        sel = self.listbox.GetSelection()
-        if sel != -1:
-            self.listbox.Delete(sel)
-
-    def OnClear(self, event):
-        self.listbox.Clear()
-
-
+    def play(self, event):
+        to_play = self.potential_songs.ordered[0].song
+        track_id = models.SongList.to_spotify_track_id(to_play)
+        self.player.play(track_id)
 
 app = wx.App()
 ListBox(None, -1, 'ListBox')
