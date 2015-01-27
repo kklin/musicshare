@@ -1,6 +1,8 @@
 # musicshare
 #### DJ-ing, made democratic!
 
+Video demo:  https://www.youtube.com/watch?v=GKnQUizjkbU
+
 This set of programs allows users to create a designated playback server, and
 connect multiple clients that together decide what songs should be played.
 
