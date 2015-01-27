@@ -148,18 +148,27 @@ class ServerGUI(wx.Frame):
                 print("Got a request for: " + song_name)
                 song_request = SongRequest(song_obj, self.socket_to_user[sock])
                 self.potential_songs.add_song_request(song_request)
+                self.request_votes(song_request)
                 wx.CallAfter(self.update_song_display)
             elif request_type is network.Register:
+                # TODO: reject if same username is already in room
                 self.socket_to_user[sock] = parsed_request.id
                 #print(str(sock) + " is now associated with id " + str(socket_to_user[sock]))
                 #print("Requesting votes on the playlist now")
                 print(parsed_request.id + " is now registered!")
-                self.request_votes(sock, self.potential_songs)
+                self.request_votes_initial(sock, self.potential_songs)
 
-    def request_votes(self, sock, potential_songs):
+    def request_votes_initial(self, sock, potential_songs):
+        '''Requests votes when client first connects to the server'''
         for potential_song in potential_songs.song_list:
             print("Requesting vote for " + potential_song.song.id)
             vote_request = VoteRequest(potential_song.song.id)
+            vote_request.send(sock)
+
+    def request_votes(self, song_request):
+        '''Requests votes for a new song'''
+        vote_request = VoteRequest(song_request.song.id)
+        for sock in self.socket_to_user.keys():
             vote_request.send(sock)
 
     def update_song_display(self):

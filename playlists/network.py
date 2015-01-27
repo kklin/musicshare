@@ -146,7 +146,7 @@ class VoteRequest(NetworkPacket):
         return data[:Header.HEADER_LENGTH] is Header.VOTE_REQUEST
 
     def __str__(self):
-        return self.id
+        return self.song_id
 
 class Control(NetworkPacket):
     # TODO: consider enum
