@@ -21,10 +21,10 @@ class Player(object):
         # Assuming a previous login with remember_me=True and a proper logout
         # Right now, to login you have to first login through the shell in
         # /spotify/shell.py
-        self.session.on(
-            spotify.SessionEvent.CONNECTION_STATE_UPDATED, self.on_connection_state_updated)
-        self.session.relogin()
-        self.logged_in.wait()
+        # self.session.on(
+        #     spotify.SessionEvent.CONNECTION_STATE_UPDATED, self.on_connection_state_updated)
+        # self.session.relogin()
+        # self.logged_in.wait()
 
     def on_connection_state_updated(self,session):
         if session.connection.state is spotify.ConnectionState.LOGGED_IN:
@@ -36,3 +36,8 @@ class Player(object):
         track = self.session.get_track(track_uri).load()
         self.session.player.load(track)
         self.session.player.play()
+
+    def login(self, username, password):
+        '''Authenticate the session using the given username and password'''
+        # TODO: return info on whether login successful
+        self.session.login(username, password, remember_me=True)

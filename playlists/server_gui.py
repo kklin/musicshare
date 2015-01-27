@@ -53,6 +53,8 @@ class ServerGUI(wx.Frame):
 
     def main(self):
         self.player = Player()
+        # TODO: eventually this information will be gathered from the user
+        self.player.login(secret.spotify_username, secret.spotify_password)
         self.socket_list = []
         self.socket_to_user = {}
         self.potential_songs = models.SongList.from_top_songs()
