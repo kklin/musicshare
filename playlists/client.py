@@ -1,7 +1,7 @@
 import sys
 import socket, select
 import network, secret, settings
-from network import Register, NetworkPacket, VoteResponse
+from network import Register, NetworkPacket, VoteResponse, AddSong
 
 from pyechonest import song, config
 config.ECHO_NEST_API_KEY = secret.echo_nest_api_key
@@ -46,6 +46,9 @@ def main(host):
     s.close()
 
 def process(sock, data):
+    # TODO: once we make a GUI we won't have to explicitely ask to add songs
+    prompt_request_song(sock)
+
     packets = data.split(NetworkPacket.DELIMITER)
     try:
         packets.remove('') # not sure why there's that blank string, but we gotta get rid of it
@@ -55,14 +58,35 @@ def process(sock, data):
         parsed_request = NetworkPacket.parse(packet)
         request_type = type(parsed_request)
         if request_type is network.VoteRequest:
+            # TODO: instantiating an object for every vote is using up too many
+            # API calls
             song_obj = song.Song(parsed_request.song_id)
             song_name = song_obj.artist_name + " - " + song_obj.title
             print("Got a vote request from the server for: " + song_name)
             verdict = raw_input("Do you like it? (Y/N/A) ")
+            # TODO: loop until we get valid response
             response = VoteResponse(parsed_request.song_id, verdict)
             response.send(sock)
         else:
             print("Err not sure what that was..")
+
+
+def prompt_request_song(server_sock):
+    # TODO: loop until we get valid response
+    add_song = raw_input("Would you like to request a song? (Y/N) ")
+    if add_song == 'N':
+        return
+    search_query = raw_input("Enter search query: ")
+    # TODO: only search in spotify bucket
+    results = song.search(combined=search_query)
+    for i, result in enumerate(results):
+        # TODO: this is in a couple places, we could throw it in a method
+        result_string = result.artist_name + " - " + result.title
+        print("{0}. {1}".format(i, result))
+    result_num = raw_input("Enter desired result number: ")
+    desired_song = results[int(result_num)] # TODO: sanitize result_num
+    addSongPacket = AddSong(desired_song.id)
+    addSongPacket.send(server_sock)
 
 if __name__ == "__main__":
     host = socket.gethostname()

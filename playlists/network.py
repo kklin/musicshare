@@ -177,7 +177,7 @@ class AddSong(NetworkPacket):
         self.song_id = song_id
 
     def to_network_packet(self):
-        return Header.prepend_header(Header.REGISTER, self.song_id)
+        return Header.prepend_header(Header.ADD_SONG, self.song_id)
 
     @staticmethod
     def from_network_packet(data):

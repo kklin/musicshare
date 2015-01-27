@@ -63,3 +63,6 @@ spotify_appkey.key
 
 # spotify tmp dir
 playlists/tmp
+spotify/tm
+
+acct_info

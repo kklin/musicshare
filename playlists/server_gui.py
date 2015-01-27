@@ -7,6 +7,7 @@ import wx, time, threading
 import sys
 import socket, select
 import settings, network, models, secret, util
+from models import SongRequest
 from network import NetworkPacket, VoteRequest
 from vote import Vote
 from spotify_player import Player
@@ -90,7 +91,7 @@ class ServerGUI(wx.Frame):
                         else:
                             # socket is broken
                             if sock in self.socket_list:
-                                print(str(socket_to_user[sock]) + " disconnected ")
+                                print(str(self.socket_to_user[sock]) + " disconnected ")
                                 self.socket_list.remove(sock)
                                 self.socket_to_user.pop(sock, None)
                     except Exception as e:
@@ -140,7 +141,12 @@ class ServerGUI(wx.Frame):
             elif request_type is network.RequestInfo:
                 pass
             elif request_type is network.AddSong:
-                pass
+                song_obj = song.Song(parsed_request.song_id)
+                song_name = song_obj.artist_name + " - " + song_obj.title
+                print("Got a request for: " + song_name)
+                song_request = SongRequest(song_obj, self.socket_to_user[sock])
+                self.potential_songs.add_song_request(song_request)
+                wx.CallAfter(self.update_song_display)
             elif request_type is network.Register:
                 self.socket_to_user[sock] = parsed_request.id
                 #print(str(sock) + " is now associated with id " + str(socket_to_user[sock]))
