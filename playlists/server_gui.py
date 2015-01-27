@@ -184,6 +184,7 @@ class ServerGUI(wx.Frame):
         to_play = self.potential_songs.ordered[0].song
         track_id = util.to_spotify_track_id(to_play)
         self.player.play(track_id)
+        # TODO: remove (or at least change position) song from playlist after played
 
 app = wx.App()
 ServerGUI(None, -1)

@@ -125,8 +125,9 @@ class Client:
         for i, result in enumerate(results):
             # TODO: this is in a couple places, we could throw it in a method
             result_string = result.artist_name + " - " + result.title
-            print("{0}. {1}".format(i, result))
+            print("{0}. {1}".format(i, result_string))
         result_num = raw_input("Enter desired result number: ")
+        # TODO: allow user to reject all choices, and don't add anything
         desired_song = results[int(result_num)] # TODO: sanitize result_num
         addSongPacket = AddSong(desired_song.id)
         addSongPacket.send(self.socket)

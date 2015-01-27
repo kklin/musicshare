@@ -70,7 +70,8 @@ class SongList(object):
     def from_top_songs():
         hot_artists = artist.top_hottt()
         hottest_artist = hot_artists[0] 
-        hot_playlist = playlist.basic(artist_id = hottest_artist.id)
+        # TODO: change slice length to something saved in config
+        hot_playlist = playlist.basic(artist_id = hottest_artist.id)[:3]
         song_list = SongList()
         for song in hot_playlist:
             song_list.add_song_request(SongRequest(song, None))
