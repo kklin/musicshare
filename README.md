@@ -1,5 +1,5 @@
 # musicshare
-#### DJ[ ]ing, made democratic!
+#### DJ-ing, made democratic!
 
 Video demo:  https://www.youtube.com/watch?v=GKnQUizjkbU
 
@@ -24,6 +24,7 @@ Short term:
 [ ] Allow server to skip/pause songs (idea of master client)
 [ ] Create GUI for client
 [x] Automatically connect clients when a server is available
+
 
 Long term:
 [ ] Create mobile version
