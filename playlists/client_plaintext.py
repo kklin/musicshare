@@ -148,8 +148,11 @@ class Client:
             # TODO: this is in a couple places, we could throw it in a method
             result_string = result.artist_name + " - " + result.title
             print("{0}. {1}".format(i, result_string))
+        print("{0}. Don't add song".format(len(results)))
         result_num = raw_input("Enter desired result number: ")
         # TODO: allow user to reject all choices, and don't add anything
+        if result_num.lower() == 'quit' or int(result_num) is len(results):
+            return False
         desired_song = results[int(result_num)] # TODO: sanitize result_num
         addSongPacket = AddSong(desired_song.id)
         addSongPacket.send(self.socket)
