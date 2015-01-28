@@ -64,7 +64,9 @@ class SongList(object):
     @property
     def ordered(self):
         # TODO: this ordering scheme is very basic: ignores everything except yes votes
-        return sorted(self.song_list, key = lambda x: x.vote_tracker.number_yes, reverse=True)
+        return sorted(self.song_list, key = lambda x:
+                x.vote_tracker.number_yes/x.vote_tracker.number_no if
+                x.vote_tracker.number_no is not 0 else 1, reverse=True)
 
     @staticmethod
     def from_top_songs():

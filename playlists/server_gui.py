@@ -118,6 +118,8 @@ class ServerGUI(wx.Frame):
                             # socket is broken
                             if sock in self.socket_list:
                                 print(str(self.socket_to_user[sock]) + " disconnected ")
+                                # TODO: if the disconnected user is the master
+                                # client, a new master client should be chosen
                                 self.socket_list.remove(sock)
                                 self.socket_to_user.pop(sock, None)
                     except Exception as e:
