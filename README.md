@@ -22,7 +22,7 @@ this kind of stuff is possible.
 Short term:
 - [ ] Add smarter playlist generation
 - [x] Allow users to add songs suggestions to the playlist
-- [ ] Allow server to skip/pause songs (idea of master client)
+- [x] Allow server to skip/pause songs (idea of master client)
 - [ ] Create GUI for client
 - [x] Automatically connect clients when a server is available
 
