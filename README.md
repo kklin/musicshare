@@ -19,14 +19,14 @@ this kind of stuff is possible.
 
 #### TODO
 Short term:
-[ ] Add smarter playlist generation
-[x] Allow users to add songs suggestions to the playlist
-[ ] Allow server to skip/pause songs (idea of master client)
-[ ] Create GUI for client
-[x] Automatically connect clients when a server is available
+- [ ] Add smarter playlist generation
+- [x] Allow users to add songs suggestions to the playlist
+- [ ] Allow server to skip/pause songs (idea of master client)
+- [ ] Create GUI for client
+- [x] Automatically connect clients when a server is available
 
 
 Long term:
-[ ] Create mobile version
-[ ] Integrate Bitcoin to turn Musicshare into a jukebox
-[ ] Integrate into Raspberry Pi
+- [ ] Create mobile version
+- [ ] Integrate Bitcoin to turn Musicshare into a jukebox
+- [ ] Integrate into Raspberry Pi
