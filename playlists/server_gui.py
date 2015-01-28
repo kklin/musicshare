@@ -171,14 +171,28 @@ class ServerGUI(wx.Frame):
         for sock in self.socket_to_user.keys():
             vote_request.send(sock)
 
+    # TODO: chars aren't equal width so can't space columns using spaces
+    SONG_WIDTH = 50
+    VOTE_WIDTH = 30
+    REQUESTER_WIDTH = 30
     def update_song_display(self):
         self.listbox.Clear()
+
+        # add header
+        # HEADER = "SONG".ljust(ServerGUI.SONG_WIDTH) + " | " + "VOTES".ljust(ServerGUI.VOTE_WIDTH) + " | " + "REQUESTER".ljust(ServerGUI.REQUESTER_WIDTH)
+        # self.listbox.Append(HEADER)
+
+        # add song requests
         for song_request in self.potential_songs.ordered:
             song_obj = song_request.song
             song_name = song_obj.artist_name + " - " + song_obj.title
+            # song_name = song_name.ljust(ServerGUI.SONG_WIDTH)
             vote_tracker = song_request.vote_tracker
             vote_breakdown = "Yes: {0}, No: {1}, Abstain: {2}".format(vote_tracker.number_yes, vote_tracker.number_no, vote_tracker.number_abstain)
-            self.listbox.Append(song_name + " | " + vote_breakdown)
+            # vote_breakdown = vote_breakdown.ljust(ServerGUI.VOTE_WIDTH)
+            requester = str(song_request.requester)
+            # requester = requester..ljust(ServerGUI.REQUESTER_WIDTH)
+            self.listbox.Append(song_name + " | " + vote_breakdown + " | " + requester)
 
     def play(self, event):
         to_play = self.potential_songs.ordered[0].song
