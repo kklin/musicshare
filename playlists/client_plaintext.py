@@ -12,8 +12,21 @@ pending_votes = []
 class Client:
     QUIT = 'quit'
 
-    def __init__(self, host):
+    def __init__(self, host=None):
+        if not host:
+            host = self.discover_server()
         self.main(host)
+
+    # TODO: should this be an instance method?
+    def discover_server(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #create UDP socket
+        s.bind(('', network.AUTODISCOVER_PORT))
+        while 1:
+            data, addr = s.recvfrom(1024) #wait for a packet
+            if data.startswith(network.Header.AUTODISCOVER):
+                ip = data[len(network.Header.AUTODISCOVER):]
+                print("got service announcement from " + ip)
+                return ip
 
     def main(self, host):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -136,4 +149,5 @@ if __name__ == "__main__":
     host = socket.gethostname()
     if len(sys.argv) is 2: # if hostname is specified
         host = sys.argv[1]
-    client = Client(host)
+    # client = Client(host)
+    client = Client()

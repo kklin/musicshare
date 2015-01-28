@@ -101,7 +101,21 @@ class ServerGUI(wx.Frame):
                         continue
             time.sleep(1)
 
+            # TODO: this could be in a different thread?
+            self.broadcast_service_announcement()
+
         server_socket.close()
+
+    def broadcast_service_announcement(self):
+        # TODO: we could reuse the socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #create UDP socket
+        s.bind(('', 0))
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) #this is a broadcast socket
+        my_ip= socket.gethostbyname(socket.gethostname()) #get our IP. Be careful if you have multiple network interfaces or IPs
+
+        data = network.Header.AUTODISCOVER+my_ip
+        s.sendto(data, ('<broadcast>', network.AUTODISCOVER_PORT))
+        # print("sent service announcement")
 
     # TODO: could we accidentally have a packet split between buffers?
     def process(self, sock, data):

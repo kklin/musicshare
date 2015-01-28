@@ -1,5 +1,5 @@
 # musicshare
-#### DJ-ing, made democratic!
+#### DJ[ ]ing, made democratic!
 
 Video demo:  https://www.youtube.com/watch?v=GKnQUizjkbU
 
@@ -19,13 +19,13 @@ this kind of stuff is possible.
 
 #### TODO
 Short term:
-- Add smarter playlist generation
-- Allow users to add songs suggestions to the playlist
-- Allow users to skip/pause songs
-- Create GUI for client
-- Automatically connect clients when a server is available
+[ ] Add smarter playlist generation
+[x] Allow users to add songs suggestions to the playlist
+[ ] Allow server to skip/pause songs (idea of master client)
+[ ] Create GUI for client
+[x] Automatically connect clients when a server is available
 
 Long term:
-- Create mobile version
-- Integrate Bitcoin to turn Musicshare into a jukebox
-- Integrate into Raspberry Pi
+[ ] Create mobile version
+[ ] Integrate Bitcoin to turn Musicshare into a jukebox
+[ ] Integrate into Raspberry Pi

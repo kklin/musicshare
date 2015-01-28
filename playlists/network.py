@@ -8,6 +8,8 @@
 # other classes, such as Register. Finally, add the appropriate parsing logic to
 # NetworkPacket.parse()
 
+AUTODISCOVER_PORT = 50000
+
 class Header(object):
     HEADER_LENGTH = 1
 
@@ -19,6 +21,9 @@ class Header(object):
     REGISTER = '6'
     VOTE_RESPONSE = '7'
     NOTIFY_EVENT = '8'
+
+    # header for autodiscovery
+    AUTODISCOVER = "fna349fn"
 
     @staticmethod
     def prepend_header(header, data):
