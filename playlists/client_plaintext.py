@@ -10,7 +10,7 @@ RECV_BUFFER = 4096
 pending_votes = []
 
 class Client:
-    QUIT = 'quit'
+    QUIT = 'quit' # TODO: turn into list and add EOF
 
     def __init__(self, host=None):
         if not host:

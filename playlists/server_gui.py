@@ -20,6 +20,7 @@ ID_PLAY = 1
 class ServerGUI(wx.Frame):
 
     TITLE = "Musicshare Server"
+    # TODO: move into network class
     RECV_BUFFER = 4096
 
     def __init__(self, parent, id):
@@ -55,10 +56,13 @@ class ServerGUI(wx.Frame):
         self.player = Player()
         # TODO: eventually this information will be gathered from the user
         self.player.login(secret.spotify_username, secret.spotify_password)
+
+        # init instance variables
         self.socket_list = []
         self.socket_to_user = {}
         self.potential_songs = models.SongList.from_top_songs()
 
+        # setup our network connection
         host = socket.gethostname()
         port = settings.port
 
