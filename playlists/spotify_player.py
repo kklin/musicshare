@@ -31,7 +31,7 @@ class Player(object):
 
         self.is_logged_in = False
         self.is_playing = False
-        self.curr_song = None
+        # self.curr_song = None
         self.track_time = -1
 
     def on_connection_state_updated(self,session):
@@ -46,7 +46,7 @@ class Player(object):
         self.session.player.play()
         # TODO: look at return value player.play() ?
         self.is_playing = True
-        self.curr_song = track_uri # TODO: fill in with pyechonest obj?
+        #self.curr_song = track_uri # TODO: fill in with pyechonest obj?
         return self.is_playing
 
     def play(self, song_request):
@@ -97,10 +97,8 @@ class PlaylistPlayer(Player):
         self.skip()
 
     def skip(self):
-        # if there's no song to skip to
-        if self.playlist_index + 1 >= len(self.playlist):
-            return False
-        self.playlist_index += 1
+        #  loop back to beginning if at end
+        self.playlist_index = (self.playlist_index + 1) % len(self.playlist)
         self.play(self.playlist[self.playlist_index])
         return True
 
@@ -113,4 +111,15 @@ class PlaylistPlayer(Player):
         # shifted
         self.playlist = playlist
         self.playlist_index = playlist_index
+
+    @property
+    def curr_song(self):
+        return self.playlist[self.playlist_index]
+
+    def play(self, uri):
+        self.playlist_index = self.playlist.index(uri)
+        Player.play(self, uri)
+
+    # TODO: the user shouldn't be able to directly call PlaylistPlayer.play()
+    # because then the index gets screwed up
 

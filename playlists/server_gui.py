@@ -27,11 +27,12 @@ class ServerGUI(wx.Frame):
     RECV_BUFFER = 4096
 
     def __init__(self, parent, id):
-        wx.Frame.__init__(self, parent, id, ServerGUI.TITLE, size=(350, 220))
+        wx.Frame.__init__(self, parent, id, ServerGUI.TITLE, size=(500, 350))
 
         # setup GUI
         # containers
         panel = wx.Panel(self, -1)
+        container = wx.BoxSizer(wx.VERTICAL)
         hbox = wx.BoxSizer(wx.HORIZONTAL)
 
         # listbox for displaying playlist
@@ -40,7 +41,7 @@ class ServerGUI(wx.Frame):
 
         # buttons
         btnPanel = wx.Panel(panel, -1)
-        vbox = wx.BoxSizer(wx.VERTICAL)
+        controls = wx.BoxSizer(wx.VERTICAL)
         play = wx.Button(btnPanel, ID_PLAY, 'Play', size=(90, 30))
         pause = wx.Button(btnPanel, ID_PAUSE, 'Pause', size=(90, 30))
         skip = wx.Button(btnPanel, ID_SKIP, 'Skip', size=(90, 30))
@@ -51,17 +52,32 @@ class ServerGUI(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.skip_gui, id=ID_SKIP)
         self.Bind(wx.EVT_BUTTON, self.resume_gui, id=ID_RESUME)
 
-        vbox.Add((-1, 20))
-        vbox.Add(play)
-        vbox.Add(pause)
-        vbox.Add(resume)
-        vbox.Add(skip)
+        controls.Add((-1, 20))
+        controls.Add(play)
+        controls.Add(pause)
+        controls.Add(resume)
+        controls.Add(skip)
 
-        btnPanel.SetSizer(vbox)
+        btnPanel.SetSizer(controls)
         hbox.Add(btnPanel, 0.6, wx.EXPAND | wx.RIGHT, 20)
-        panel.SetSizer(hbox)
 
-        #TODO: add audio slider
+        container.Add(hbox, 0.6, wx.EXPAND | wx.TOP, 20)
+
+        # container for feedback about status
+        status_sizer = wx.BoxSizer(wx.VERTICAL)
+        status_panel = wx.Panel(panel, -1)
+        status_panel.SetSizer(status_sizer)
+
+        # add now playing
+        self.now_playing = wx.StaticText(status_panel, label='Now Playing: ') #
+        status_sizer.Add(self.now_playing, wx.LEFT, 20)
+        # add playblack slider
+        self.playbackSlider = wx.Slider(status_panel, -1)
+        self.Bind(wx.EVT_SLIDER, self.on_seek, self.playbackSlider)
+        status_sizer.Add(self.playbackSlider, 1, wx.EXPAND | wx.ALL, 20)
+        container.Add(status_panel, 0.6, wx.EXPAND | wx.BOTTOM, 20)
+
+        panel.SetSizer(container)
 
         self.Centre()
         self.Show(True)
@@ -270,13 +286,15 @@ class ServerGUI(wx.Frame):
             # requester = requester..ljust(ServerGUI.REQUESTER_WIDTH)
             self.listbox.Append(song_name + " | " + vote_breakdown + " | " + requester)
 
-
-    # ===== GUI callbacks =====
     def do_play(self):
         to_play = self.potential_songs.ordered[0].song
         track_id = util.to_spotify_track_id(to_play)
         self.player.play(track_id)
+        self.update_now_playing()
         # TODO: remove (or at least change position) song from playlist after played
+
+    def update_now_playing(self):
+        self.now_playing.SetLabel("Now playing: {0}".format(self.player.curr_song))
 
     def do_pause(self):
         self.player.pause()
@@ -286,6 +304,9 @@ class ServerGUI(wx.Frame):
 
     def do_skip(self):
         self.player.skip()
+        self.update_now_playing()
+
+    # ===== GUI callbacks =====
 
     def play_gui(self, event):
         self.do_play()
@@ -298,6 +319,10 @@ class ServerGUI(wx.Frame):
 
     def resume_gui(self, event):
         self.do_resume()
+
+    def on_seek(self, event):
+        # TODO
+        pass
 
 app = wx.App()
 ServerGUI(None, -1)
