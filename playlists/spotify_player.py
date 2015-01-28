@@ -2,6 +2,9 @@ import threading
 
 import spotify
 
+# TODO: allow support for callbacks
+# e.g. the server can subscribe to receive a callback when the song finishes
+# playing
 class Player(object):
     '''There should only be one instance of this class. It handles playing
     Spotify tracks'''
@@ -87,6 +90,11 @@ class PlaylistPlayer(Player):
         Player.__init__(self)
         self.playlist = playlist
         self.playlist_index = 0
+
+        self.session.on(spotify.SessionEvent.END_OF_TRACK, self.on_end_of_track)
+
+    def on_end_of_track(self, session):
+        self.skip()
 
     def skip(self):
         # if there's no song to skip to
