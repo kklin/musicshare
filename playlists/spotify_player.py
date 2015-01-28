@@ -28,13 +28,14 @@ class Player(object):
 
         self.is_logged_in = False
         self.is_playing = False
-        self.curr_playing = None
+        self.curr_song = None
+        self.track_time = -1
 
     def on_connection_state_updated(self,session):
         if session.connection.state is spotify.ConnectionState.LOGGED_IN:
             self.logged_in.set()
 
-    def play(self, track_uri):
+    def play_uri(self, track_uri):
         '''Plays the given track, regardless of whether or not there is a song
         currently playing'''
         track = self.session.get_track(track_uri).load()
@@ -42,17 +43,28 @@ class Player(object):
         self.session.player.play()
         # TODO: look at return value player.play() ?
         self.is_playing = True
-        self.curr_playing = track_uri # TODO: fill in with pyechonest obj?
+        self.curr_song = track_uri # TODO: fill in with pyechonest obj?
         return self.is_playing
 
+    def play(self, song_request):
+        # figure out the track_uri from the song_request and call play_uri
+        # just going to make it call play_uri directly for now so it doesn't
+        # break other stuff
+        self.play_uri(song_request)
+
+    def pause(self):
+        self.session.player.play(False)
+
+    def resume(self):
+        self.session.player.play()
+
     def stop(self):
-        pass
+        self.session.player.play(False)
+        self.session.player.unload()
 
-    def skip(self):
-        pass
-
-    def play_state(self):
-        pass
+    def seek(self, seconds):
+        # TODO Check if playing
+        self.session.player.seek(int(seconds) * 1000)
 
     def login(self, username, password):
         '''Authenticate the session using the given username and password'''
@@ -66,3 +78,31 @@ class PlayerState(object):
         self.playing = playing
         self.time = time
         self.song = song
+
+class PlaylistPlayer(Player):
+    '''A player that knows about other songs, and can do things like skip to the
+    next song'''
+    
+    def __init__(self, playlist=[]):
+        Player.__init__(self)
+        self.playlist = playlist
+        self.playlist_index = 0
+
+    def skip(self):
+        # if there's no song to skip to
+        if self.playlist_index + 1 >= len(self.playlist):
+            return False
+        self.playlist_index += 1
+        self.play(self.playlist[self.playlist_index])
+        return True
+
+    def update_playlist(self, playlist, playlist_index=None):
+        # assign default here because we can't reference self in the arguments
+        if not playlist_index:
+            playlist_index = self.playlist_index
+        # haven't quite figured out how updating playlists is going to work.. we
+        # can't just throw in a new playlist because then the indices might be
+        # shifted
+        self.playlist = playlist
+        self.playlist_index = playlist_index
+

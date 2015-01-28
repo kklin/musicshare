@@ -1,7 +1,7 @@
 import sys, threading
 import socket, select
 import network, secret, settings
-from network import Register, NetworkPacket, VoteResponse, AddSong
+from network import Register, NetworkPacket, VoteResponse, AddSong, Control
 
 from pyechonest import song, config
 config.ECHO_NEST_API_KEY = secret.echo_nest_api_key
@@ -85,7 +85,7 @@ class Client:
         # TODO: how to make sure we're cleanly closing socket when we exit?
 
     def console_thread(self):
-        commands = ['vote', 'add_song', Client.QUIT]
+        commands = ['vote', 'add_song', 'pause', 'play', 'resume', 'skip',  Client.QUIT]
         print("Available commands: {0}".format(commands))
         while True:
             command = raw_input(">>> ")
@@ -93,6 +93,14 @@ class Client:
                 self.vote_on_pending()
             elif command.lower() == 'add_song':
                 self.add_song()
+            elif command.lower() == 'pause':
+                self.do_pause()
+            elif command.lower() == 'play':
+                self.do_play()
+            elif command.lower() == 'resume':
+                self.do_resume()
+            elif command.lower() == 'skip':
+                self.do_skip()
             elif command.lower() == Client.QUIT:
                 sys.exit()
 
@@ -134,6 +142,7 @@ class Client:
         # TODO: loop until we get valid response
         search_query = raw_input("Enter search query: ")
         # TODO: only search in spotify bucket
+        # or we could directly search spotify.. hmm.
         results = song.search(combined=search_query)
         for i, result in enumerate(results):
             # TODO: this is in a couple places, we could throw it in a method
@@ -144,6 +153,22 @@ class Client:
         desired_song = results[int(result_num)] # TODO: sanitize result_num
         addSongPacket = AddSong(desired_song.id)
         addSongPacket.send(self.socket)
+
+    def do_play(self):
+        controlPacket = Control(Control.PLAY)
+        controlPacket.send(self.socket)
+
+    def do_resume(self):
+        controlPacket = Control(Control.RESUME)
+        controlPacket.send(self.socket)
+
+    def do_pause(self):
+        controlPacket = Control(Control.PAUSE)
+        controlPacket.send(self.socket)
+
+    def do_skip(self):
+        controlPacket = Control(Control.SKIP)
+        controlPacket.send(self.socket)
 
 if __name__ == "__main__":
     host = socket.gethostname()

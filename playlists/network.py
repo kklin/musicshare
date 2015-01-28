@@ -60,7 +60,7 @@ class NetworkPacket(object):
         elif VoteRequest.is_packet(data):
             return VoteRequest.from_network_packet(data)
         elif Control.is_packet(data):
-            return Contro.from_network_packet(data)
+            return Control.from_network_packet(data)
         elif RequestInfo.is_packet(data):
             return RequestInfo.from_network_packet(data)
         elif AddSong.is_packet(data):
@@ -96,11 +96,11 @@ class NotifyEvent(NetworkPacket):
 
 class Register(NetworkPacket):
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, username):
+        self.username = username
 
     def to_network_packet(self):
-        return Header.prepend_header(Header.REGISTER, self.id)
+        return Header.prepend_header(Header.REGISTER, self.username)
 
     @staticmethod
     def from_network_packet(data):
@@ -111,7 +111,7 @@ class Register(NetworkPacket):
         return data[:Header.HEADER_LENGTH] is Header.REGISTER
 
     def __str__(self):
-        return self.id
+        return self.username
 
 class VoteResponse(NetworkPacket):
 
@@ -158,12 +158,13 @@ class Control(NetworkPacket):
     PAUSE = 0
     PLAY = 1
     SKIP = 2
+    RESUME = 3
 
     def __init__(self, control):
         self.control = control
 
     def to_network_packet(self):
-        return Header.prepend_header(Header.CONTROL, self.control)
+        return Header.prepend_header(Header.CONTROL, str(self.control))
 
     @staticmethod
     def from_network_packet(data):
