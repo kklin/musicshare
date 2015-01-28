@@ -2,6 +2,7 @@
 #### DJ-ing, made democratic!
 
 Video demo:  https://www.youtube.com/watch?v=GKnQUizjkbU
+That video is pretty outdated now. It doesn't show things like adding songs and the client console, among other things.
 
 This set of programs allows users to create a designated playback server, and
 connect multiple clients that together decide what songs should be played.
