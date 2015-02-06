@@ -34,6 +34,7 @@ class Client:
 
         # connect to server
         try:
+            print("Trying to connect to {0}:{1}".format(host, settings.port))
             self.socket.connect((host, settings.port))
         except:
             print("Unable to connect")

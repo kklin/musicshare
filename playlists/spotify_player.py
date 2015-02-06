@@ -93,6 +93,15 @@ class PlaylistPlayer(Player):
 
         self.session.on(spotify.SessionEvent.END_OF_TRACK, self.on_end_of_track)
 
+    # TODO: define this for other events too
+    def end_track_function(self, function):
+        '''This allows an arbitrary function to be run at the end of a track. In
+        this way we can do stuff like automatically go to the next song, or
+        remove the finished song
+        TODO: define some generic functions so that programmers don't always
+        have to write their own'''
+        self.end_track_function = function
+
     def on_end_of_track(self, session):
         self.skip()
 

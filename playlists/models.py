@@ -19,18 +19,30 @@ class SongRequest(object):
                 self.song.__repr__(), self.vote_tracker.__repr__())
 
 
-class Playlist(object):
+def Song(object):
+    '''This class encapsulates information about a song in a song request. It
+    acts as a sort of cache so that we don't have to keep making echonest API
+    calls to get a echonest instance'''
 
-    def __init__(self):
-        self.contributors = []
-        self.song_list = SongList()
-        self.current_song = None
-        
-    def add_contributor(self, contributor):
-        self.contributors.append(contributor)
+    def __init__(self, title, artist, spotify_uri, spotify_object=None,
+            echonest_object=None):
+        self.title = title
+        self.artist = artist
+        self.spotify_uri = spotify_uri
+        self.spotify_object = spotify_object
 
-    def remove_contributor(self, contributor):
-        self.contributors.remove(contributor)
+# class Playlist(object):
+# 
+#     def __init__(self):
+#         self.contributors = []
+#         self.song_list = SongList()
+#         self.current_song = None
+#         
+#     def add_contributor(self, contributor):
+#         self.contributors.append(contributor)
+# 
+#     def remove_contributor(self, contributor):
+#         self.contributors.remove(contributor)
 
 class SongList(object):
 
@@ -90,13 +102,13 @@ class SongList(object):
     def __repr__(self):
         return self.song_list.__repr__()
 
-class Contributor(object):
-
-    def __init__(self, name):
-        self.name = name
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return self.name
+# class Contributor(object):
+# 
+#     def __init__(self, name):
+#         self.name = name
+# 
+#     def __str__(self):
+#         return self.__repr__()
+# 
+#     def __repr__(self):
+#         return self.name
