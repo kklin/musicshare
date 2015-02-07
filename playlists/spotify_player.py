@@ -14,7 +14,9 @@ class Player(object):
     def __init__(self):
         # Assuming a spotify_appkey.key in the current dir
         self.session = spotify.Session()
-        self.audio = spotify.PortAudioSink(self.session)
+        self.audio = spotify.PortAudioSink(self.session) # TODO: test that speakers work
+                                                         # or allow switching
+                                                         # speakers 
 
         loop = spotify.EventLoop(self.session)
         loop.start()
